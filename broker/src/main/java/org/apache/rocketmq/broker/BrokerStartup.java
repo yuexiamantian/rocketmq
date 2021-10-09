@@ -147,6 +147,7 @@ public class BrokerStartup {
                 System.exit(-2);
             }
 
+            // nameServer地址可用检测
             String namesrvAddr = brokerConfig.getNamesrvAddr();
             if (null != namesrvAddr) {
                 try {

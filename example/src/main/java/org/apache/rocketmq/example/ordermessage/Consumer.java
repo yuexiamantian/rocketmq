@@ -18,12 +18,16 @@ package org.apache.rocketmq.example.ordermessage;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerOrderly;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
+import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.common.message.MessageExt;
 
 public class Consumer {
@@ -33,15 +37,15 @@ public class Consumer {
 
         consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
 
-        consumer.subscribe("TopicTest", "TagA || TagC || TagD");
-
+        consumer.subscribe("TopicTestjjj", "TagA || TagC || TagD");
+        consumer.setNamesrvAddr("localhost:9876");
         consumer.registerMessageListener(new MessageListenerOrderly() {
             AtomicLong consumeTimes = new AtomicLong(0);
 
             @Override
             public ConsumeOrderlyStatus consumeMessage(List<MessageExt> msgs, ConsumeOrderlyContext context) {
                 context.setAutoCommit(true);
-                System.out.printf("%s Receive New Messages: %s %n", Thread.currentThread().getName(), msgs);
+                System.out.printf("%s Receive New Messages: %s %n", Thread.currentThread().getName(), new Gson().toJson(msgs));
                 this.consumeTimes.incrementAndGet();
                 if ((this.consumeTimes.get() % 2) == 0) {
                     return ConsumeOrderlyStatus.SUCCESS;
